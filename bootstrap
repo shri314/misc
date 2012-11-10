@@ -1,0 +1,17 @@
+#!/bin/bash -x
+
+touch NEWS README AUTHORS ChangeLog \
+   && ( set +x; test -d config || mkdir config ) \
+   && ( set +x; test -x configure && mv -f configure .configure.old; exit 0; ) \
+   && autoreconf -B config -f -i -v \
+   && test -x configure \
+   && ( set +x; rm -f .configure.old; exit 0; ) \
+   && (
+         set +x; 
+         cat<<EOM
+For configuring:
+================
+mkdir -p out && cd out && ../configure  --enable-maintainer-mode && cd -
+EOM
+   )
+

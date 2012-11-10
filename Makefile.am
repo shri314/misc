@@ -1,9 +1,12 @@
-ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
+include config/CommonMakefile.am
 
-bin_PROGRAMS = disk-container
+TESTS += File_test
 
-disk_container_SOURCES = \
-      src/DiskContainer.cpp
+File_test_SOURCES = \
+	tests/File_test.cpp \
+	utils/File.cpp
 
-INCLUDE = \
-      $(HOME)/.local/incubation-projects/include
+
+
+
+

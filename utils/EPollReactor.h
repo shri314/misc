@@ -79,6 +79,11 @@ public:
       }
    }
 
+   std::vector<epoll_event>::size_type Size() const
+   {
+      return m_PollEvents.size();
+   }
+
    void Register(int fd, int op, EventHandler* ptr)
    {
       if(!op) return;

@@ -8,7 +8,7 @@ TARGET_PATH="$HOME/.local/incubation-projects"
    cd "$SCRIPT_PATH"
    set -x; set -e;
 
-   L="http://downloads.sourceforge.net/project/boost/boost/1.46.1/boost_1_46_1.tar.bz2"
+   L="http://downloads.sourceforge.net/project/boost/boost/1.52.0/boost_1_52_0.tar.bz2"
    N="$(basename "$L")"
    I="$TARGET_PATH/.$N.installed"
 
@@ -21,7 +21,7 @@ TARGET_PATH="$HOME/.local/incubation-projects"
          wget "$L"
       fi
 
-      P="boost_1_46_1"
+      P="boost_1_52_0"
 
       rm -rf "$P"
 
@@ -30,8 +30,10 @@ TARGET_PATH="$HOME/.local/incubation-projects"
 
          tar -xjf "$N"
          cd "$P"
-         ./bootstrap.sh --prefix="$TARGET_PATH/$P"
-         ./bjam --prefix="$TARGET_PATH/$P" install
+         sed -i -e '/using gcc : / { s/.*/using gcc : : g++44 ;/; }' ./tools/build/v2/user-config.jam
+         ./bootstrap.sh --without-libraries=python --prefix="$TARGET_PATH/$P"
+         ./b2
+         ./b2 install
          touch "$I"
       )
 
@@ -39,4 +41,5 @@ TARGET_PATH="$HOME/.local/incubation-projects"
    fi
 
    echo "Installed $N"
-)
+
+) 2>&1 | tee -a $SCRIPT_PATH/install.log

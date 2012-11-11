@@ -1,7 +1,7 @@
 #ifndef ListeningSocket_h
 #define ListeningSocket_h
 
-#include "SocketImplBase.h"
+#include "utils/SocketImplBase.h"
 
 class ListeningSocket : SocketImplBase
 {

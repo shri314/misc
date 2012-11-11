@@ -4,6 +4,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#include <cstring>
 #include <cerrno>
 #include <stdexcept>
 
@@ -160,7 +161,7 @@ void File::Seek(size_type offset, Offset::Flags flags)
 }
 
 File::Exception::Exception(const std::string& context, int lerrno, const std::string& error)
-   : m_description( std::string("error occurred in - ") + context + (lerrno != 0 ? std::string(" - ") + strerror(lerrno) : "") + ( error.empty() ? error : ( " - " + error ) ) )
+   : m_description( std::string("error occurred in - ") + context + (lerrno != 0 ? std::string(" - ") + std::strerror(lerrno) : "") + ( error.empty() ? error : ( " - " + error ) ) )
 {
 }
 

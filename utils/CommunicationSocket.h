@@ -1,7 +1,7 @@
 #ifndef CommunicationSocket_h
 #define CommunicationSocket_h
 
-#include "SocketImplBase.h"
+#include "utils/SocketImplBase.h"
 
 class CommunicationSocket : SocketImplBase
 {

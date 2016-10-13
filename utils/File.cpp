@@ -3,19 +3,20 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <unistd.h>
 
 #include <cstring>
 #include <cerrno>
 #include <stdexcept>
 
-File::File(const std::string& filename, ModeFlags mode)
+File::File(const std::string& filename, Mode mode)
    : m_fd(-1)
    , m_name(filename)
 {
    Open(OFlags(mode), 0644);
 }
 
-File::File(const std::string& filename, ModeFlags mode, int permissions)
+File::File(const std::string& filename, Mode mode, int permissions)
    : m_fd(-1)
    , m_name(filename)
 {
@@ -140,19 +141,19 @@ File::size_type File::Size()
    return buf.st_size;
 }
 
-void File::Seek(size_type offset, Offset::Flags flags)
+void File::Seek(size_type offset, Whence whence)
 {
-   int whence = SEEK_SET;
+   int wh = SEEK_SET;
 
-   switch(flags)
+   switch(whence)
    {
-      case Offset::SET: whence = SEEK_SET; break;
-      case Offset::CUR: whence = SEEK_CUR; break;
-      case Offset::END: whence = SEEK_END; break;
+      case Whence::SET: wh = SEEK_SET; break;
+      case Whence::CUR: wh = SEEK_CUR; break;
+      case Whence::END: wh = SEEK_END; break;
    }
 
    errno = 0;
-   int x = lseek(m_fd, offset, whence);
+   int x = lseek(m_fd, offset, wh);
    if(x == -1)
    {
       int lerrno = errno;
@@ -165,15 +166,16 @@ File::Exception::Exception(const std::string& context, int lerrno, const std::st
 {
 }
 
-int File::OFlags(ModeFlags mode)
+int File::OFlags(Mode mode_)
 {
+   int mode = (int)mode_;
    int o_flags = 0;
-   o_flags |= ((mode & RDWR) ? O_RDWR : 0);
-   o_flags |= ((!(o_flags & O_RDWR) && (mode & RDONLY)) ? O_RDONLY : 0);
-   o_flags |= ((!(o_flags & O_RDWR) && (mode & WRONLY)) ? O_WRONLY : 0);
-   o_flags |= ((mode & APPEND) ? O_APPEND : 0);
-   o_flags |= ((mode & TRUNC) ? O_TRUNC : 0);
-   o_flags |= ((mode & EXCL) ? O_EXCL : 0);
+   o_flags |= ((mode & int(Mode::RDWR)) ? O_RDWR : 0);
+   o_flags |= ((!(o_flags & O_RDWR) && (mode & int(Mode::RDONLY))) ? O_RDONLY : 0);
+   o_flags |= ((!(o_flags & O_RDWR) && (mode & int(Mode::WRONLY))) ? O_WRONLY : 0);
+   o_flags |= ((mode & int(Mode::APPEND)) ? O_APPEND : 0);
+   o_flags |= ((mode & int(Mode::TRUNC)) ? O_TRUNC : 0);
+   o_flags |= ((mode & int(Mode::EXCL)) ? O_EXCL : 0);
 
    return o_flags;
 }

@@ -9,7 +9,7 @@ BOOST_AUTO_TEST_CASE( TextFileRW )
    std::string writes;
 
    {
-      File f("/tmp/test.txt", File::RDWR|File::TRUNC, 0644);
+      File f("/tmp/test.txt", File::Mode::RDWR|File::Mode::TRUNC, 0644);
 
       f.Write(std::string("papa\n"));
       f.Write(std::string("papaji\n"));
@@ -19,7 +19,7 @@ BOOST_AUTO_TEST_CASE( TextFileRW )
    }
 
    {
-      File f("/tmp/test.txt", File::RDONLY);
+      File f("/tmp/test.txt", File::Mode::RDONLY);
 
       std::string reads;
       while(true)
@@ -60,11 +60,10 @@ struct RawEntry
    }
 };
 
-
 BOOST_AUTO_TEST_CASE( BinaryFileRW )
 {
    {
-      File f("/tmp/test.txt", File::RDWR|File::TRUNC, 0644);
+      File f("/tmp/test.txt", File::Mode::RDWR|File::Mode::TRUNC, 0644);
 
       f.Resize( sizeof(RawEntry) * 1000 );
 
@@ -74,7 +73,7 @@ BOOST_AUTO_TEST_CASE( BinaryFileRW )
       f.Write( RawEntry(13, 14) );
    }
    {
-      File f("/tmp/test.txt", File::RDONLY);
+      File f("/tmp/test.txt", File::Mode::RDONLY);
 
       f.Seek(0);
       BOOST_CHECK( RawEntry(10, 11) == f.Read<RawEntry>() );

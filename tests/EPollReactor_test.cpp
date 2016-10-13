@@ -51,7 +51,7 @@ private:
 
       if( m_IBuffer.size() >= m_ExpectedIBuffer.size() )
       {
-         m_R->Unregister( m_ConnS->SocketFD(), EPollReactor::REGISTER_FOR_READ );
+         m_R->Unregister( m_CommS->SocketFD(), EPollReactor::REGISTER_FOR_READ );
 
          BOOST_CHECK_EQUAL( m_IBuffer, m_ExpectedIBuffer );
       }
@@ -115,8 +115,6 @@ private:
 
          m_R->Unregister( m_LisnS->SocketFD(), EPollReactor::REGISTER_FOR_READ );
          m_R->Register( m_CommS->SocketFD(), EPollReactor::REGISTER_FOR_WRITE, this );
-
-         m_CommS.reset();
       }
    }
 
@@ -145,6 +143,9 @@ BOOST_AUTO_TEST_CASE( BasicSample )
 
    if(x > 0)
    {
+   BOOST_MESSAGE( "Parent " << getpid() );
+   sleep(30);
+
       // parent
       TestServer s(&R);
 
@@ -153,10 +154,14 @@ BOOST_AUTO_TEST_CASE( BasicSample )
       while(R.Size())
       {
          R.HandleEvents(1);
+         sleep(1);
       }
    }
    else
    {
+   BOOST_MESSAGE( "Child " << getpid() );
+   sleep(30);
+
       sleep(1);
 
       // child
@@ -165,6 +170,7 @@ BOOST_AUTO_TEST_CASE( BasicSample )
       while(R.Size())
       {
          R.HandleEvents(1);
+         sleep(1);
       }
 
       exit(0);

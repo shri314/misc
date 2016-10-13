@@ -15,7 +15,24 @@ public:
    virtual ~EventHandler() { }
 };
 
-class EPollReactor
+class Reactor
+{
+public:
+   enum
+   {
+      REGISTER_FOR_READ = 1,
+      REGISTER_FOR_WRITE = 2
+   };
+
+   virtual void Register(int fd, int op, EventHandler* ptr) = 0;
+   virtual void Unregister(int fd, int op) = 0;
+   virtual void HandleEvents(int timeout = 1000 /* milliseconds */) = 0;
+   virtual unsigned Size() const = 0;
+
+   virtual ~Reactor() { }
+};
+
+class EPollReactor : public Reactor
 {
 public:
    explicit EPollReactor(int size = 1024)
@@ -26,13 +43,7 @@ public:
          ThrowError("epoll_create", lerrno);
    }
 
-   enum
-   {
-      REGISTER_FOR_READ = 1,
-      REGISTER_FOR_WRITE = 2
-   };
-
-   void HandleEvents(int timeout = 1000 /*milliseconds*/) 
+   virtual void HandleEvents(int timeout = 1000 /*milliseconds*/) 
    {
       while(true)
       {
@@ -79,12 +90,12 @@ public:
       }
    }
 
-   std::vector<epoll_event>::size_type Size() const
+   virtual unsigned Size() const
    {
       return m_PollEvents.size();
    }
 
-   void Register(int fd, int op, EventHandler* ptr)
+   virtual void Register(int fd, int op, EventHandler* ptr)
    {
       if(!op) return;
       if(fd < 0) return;
@@ -96,7 +107,7 @@ public:
       RegisterEvents(fd, Events, ptr);
    }
 
-   void Unregister(int fd, int op)
+   virtual void Unregister(int fd, int op)
    {
       if(!op) return;
       if(fd < 0 && (std::vector<epoll_event>::size_type)fd > m_PollEvents.size()) return;
@@ -108,7 +119,7 @@ public:
       RegisterEvents(fd, Events, 0);
    }
 
-   ~EPollReactor()
+   virtual ~EPollReactor()
    {
       close(m_PollFd);
    }

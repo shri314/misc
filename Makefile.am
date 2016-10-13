@@ -16,3 +16,10 @@ EPollReactor_test_SOURCES = \
 	utils/SocketImplBase.cpp
 
 ##########################
+noinst_PROGRAMS += ABC
+
+ABC_SOURCES = \
+	utils/ABC.cpp \
+	utils/File.cpp
+
+##########################

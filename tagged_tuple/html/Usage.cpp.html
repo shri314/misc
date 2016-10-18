@@ -1,0 +1,32 @@
+<html>
+<head>
+<title>~/Z-MISC-RESEARCH/tagged_tuple/Usage.cpp.html</title>
+<meta name="Generator" content="Vim/7.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+</head>
+<body bgcolor="#000000" text="#ffffff">
+<pre>
+<font color="#8080ff"><b>#include </b></font><font color="#ff40ff"><b>&quot;tagged_tuple.hpp&quot;</b></font>
+
+<font color="#00ff00"><b>struct</b></font> name;
+<font color="#00ff00"><b>struct</b></font> age;
+
+<font color="#8080ff"><b>#include </b></font><font color="#ff40ff"><b>&lt;string&gt;</b></font>
+<font color="#8080ff"><b>#include </b></font><font color="#ff40ff"><b>&lt;iostream&gt;</b></font>
+
+<font color="#00ff00"><b>int</b></font> main()
+{
+   boost::tagged_tuple&lt;name, std::string, age, <font color="#00ff00"><b>int</b></font>&gt; t1 = std::make_tuple(<font color="#ff40ff"><b>&quot;abc&quot;</b></font>, <font color="#ff40ff"><b>12</b></font>);
+
+   t1.get&lt;<font color="#ff40ff"><b>0</b></font>&gt;() += <font color="#ff40ff"><b>&quot;def&quot;</b></font>;
+   t1.get&lt;<font color="#ff40ff"><b>1</b></font>&gt;() += <font color="#ff40ff"><b>24</b></font>;
+
+   t1.get&lt;name&gt;() += <font color="#ff40ff"><b>&quot;ghi&quot;</b></font>;
+   t1.get&lt;age&gt;() += <font color="#ff40ff"><b>24</b></font>;
+
+   std::cout &lt;&lt; t1.get&lt;name&gt;() &lt;&lt; std::endl;
+   std::cout &lt;&lt; t1.get&lt;age&gt;() &lt;&lt; std::endl;
+}
+</pre>
+</body>
+</html>

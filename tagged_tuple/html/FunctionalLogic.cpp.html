@@ -1,0 +1,86 @@
+<html>
+<head>
+<title>~/Z-MISC-RESEARCH/tagged_tuple/FunctionalLogic.cpp.html</title>
+<meta name="Generator" content="Vim/7.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+</head>
+<body bgcolor="#000000" text="#ffffff">
+<pre>
+<font color="#8080ff"><b>#include </b></font><font color="#ff40ff"><b>&lt;list&gt;</b></font>
+<font color="#8080ff"><b>#include </b></font><font color="#ff40ff"><b>&lt;algorithm&gt;</b></font>
+
+<font color="#ffff00"><b>using</b></font> <font color="#00ff00"><b>namespace</b></font> std;
+
+<font color="#00ff00"><b>const</b></font> std::list&lt;<font color="#00ff00"><b>int</b></font>&gt; push_front(<font color="#00ff00"><b>const</b></font> <font color="#00ff00"><b>int</b></font> v, <font color="#00ff00"><b>const</b></font> std::list&lt;<font color="#00ff00"><b>int</b></font>&gt; x)
+{
+   <font color="#ffff00"><b>if</b></font>(x.size())
+   {
+      std::list&lt;<font color="#00ff00"><b>int</b></font>&gt; L( x.begin(), x.end() );
+      L.push_front( v );
+
+      <font color="#ffff00"><b>return</b></font> L;
+   }
+   <font color="#ffff00"><b>else</b></font>
+   {
+      <font color="#ffff00"><b>return</b></font> std::list&lt;<font color="#00ff00"><b>int</b></font>&gt;{ v };
+   }
+}
+
+<font color="#00ff00"><b>const</b></font> std::list&lt;<font color="#00ff00"><b>int</b></font>&gt; select_even(<font color="#00ff00"><b>const</b></font> std::list&lt;<font color="#00ff00"><b>int</b></font>&gt; i);
+<font color="#00ff00"><b>const</b></font> std::list&lt;<font color="#00ff00"><b>int</b></font>&gt; select_odd(<font color="#00ff00"><b>const</b></font> std::list&lt;<font color="#00ff00"><b>int</b></font>&gt; i);
+
+<font color="#00ff00"><b>const</b></font> std::list&lt;<font color="#00ff00"><b>int</b></font>&gt; select_odd(<font color="#00ff00"><b>const</b></font> std::list&lt;<font color="#00ff00"><b>int</b></font>&gt; i)
+{
+   <font color="#ffff00"><b>if</b></font>(i.size())
+   {
+      <font color="#00ff00"><b>const</b></font> std::list&lt;<font color="#00ff00"><b>int</b></font>&gt; n(++(i.begin()), i.end());
+
+      <font color="#00ff00"><b>const</b></font> std::list&lt;<font color="#00ff00"><b>int</b></font>&gt; r = select_even(n);
+
+      <font color="#ffff00"><b>return</b></font> r;
+   }
+   <font color="#ffff00"><b>else</b></font>
+   {
+      <font color="#ffff00"><b>return</b></font> std::list&lt;<font color="#00ff00"><b>int</b></font>&gt;();
+   }
+}
+
+<font color="#00ff00"><b>const</b></font> std::list&lt;<font color="#00ff00"><b>int</b></font>&gt; select_even(<font color="#00ff00"><b>const</b></font> std::list&lt;<font color="#00ff00"><b>int</b></font>&gt; i)
+{
+   <font color="#ffff00"><b>if</b></font>(i.size())
+   {
+      <font color="#00ff00"><b>const</b></font> std::list&lt;<font color="#00ff00"><b>int</b></font>&gt; n(++(i.begin()), i.end());
+
+      <font color="#00ff00"><b>const</b></font> std::list&lt;<font color="#00ff00"><b>int</b></font>&gt; r = select_odd(n);
+
+      <font color="#ffff00"><b>return</b></font> push_front(i.front(), r);
+   }
+   <font color="#ffff00"><b>else</b></font>
+   {
+      <font color="#ffff00"><b>return</b></font> std::list&lt;<font color="#00ff00"><b>int</b></font>&gt;();
+   }
+}
+
+<font color="#8080ff"><b>#include </b></font><font color="#ff40ff"><b>&lt;iostream&gt;</b></font>
+
+<font color="#00ff00"><b>int</b></font> main()
+{
+   std::list&lt;<font color="#00ff00"><b>int</b></font>&gt; i = { <font color="#ff40ff"><b>10</b></font>, <font color="#ff40ff"><b>111</b></font>, <font color="#ff40ff"><b>332</b></font>, <font color="#ff40ff"><b>4343</b></font> };
+
+   <font color="#ffff00"><b>for</b></font>(<font color="#00ff00"><b>auto</b></font> v : i)
+   {
+      std::cout &lt;&lt; v &lt;&lt; std::endl;
+   }
+
+   std::cout &lt;&lt; std::endl;
+
+   std::list&lt;<font color="#00ff00"><b>int</b></font>&gt; j = select_even(i);
+
+   <font color="#ffff00"><b>for</b></font>(<font color="#00ff00"><b>auto</b></font> v : j)
+   {
+      std::cout &lt;&lt; v &lt;&lt; std::endl;
+   }
+}
+</pre>
+</body>
+</html>

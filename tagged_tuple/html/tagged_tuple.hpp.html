@@ -1,0 +1,120 @@
+<html>
+<head>
+<title>~/Z-MISC-RESEARCH/tagged_tuple/tagged_tuple.hpp.html</title>
+<meta name="Generator" content="Vim/7.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+</head>
+<body bgcolor="#000000" text="#ffffff">
+<pre>
+<font color="#8080ff"><b>#ifndef tagged_tuple_hpp__</b></font>
+<font color="#8080ff"><b>#define tagged_tuple_hpp__</b></font>
+
+<font color="#8080ff"><b>#include </b></font><font color="#ff40ff"><b>&lt;tuple&gt;</b></font>
+<font color="#8080ff"><b>#include </b></font><font color="#ff40ff"><b>&lt;type_traits&gt;</b></font>
+
+<font color="#8080ff"><b>/*</b></font>
+<font color="#8080ff"><b> * @author Shriram V (shri314@yahoo.com)</b></font>
+<font color="#8080ff"><b> </b></font><font color="#8080ff"><b>*/</b></font>
+
+<font color="#00ff00"><b>namespace</b></font> boost
+{
+   <font color="#00ff00"><b>namespace</b></font> tagged_tuple_impl
+   {
+      <font color="#00ff00"><b>template</b></font>&lt;<font color="#00ff00"><b>class</b></font>... Args&gt;
+      <font color="#00ff00"><b>struct</b></font> typelist
+      {
+         <font color="#00ff00"><b>template</b></font>&lt;<font color="#00ff00"><b>class</b></font> T&gt;
+         <font color="#ffff00"><b>using</b></font> push_front_t = typelist&lt;T, Args...&gt;;
+
+         <font color="#ffff00"><b>using</b></font> tuple_t = std::tuple&lt;Args...&gt;;
+      };
+
+      <font color="#8080ff"><b>/////////////////////////</b></font>
+
+      <font color="#00ff00"><b>template</b></font>&lt;<font color="#00ff00"><b>class</b></font>&gt;
+      <font color="#00ff00"><b>struct</b></font> select_even;
+
+      <font color="#00ff00"><b>template</b></font>&lt;<font color="#00ff00"><b>class</b></font>&gt;
+      <font color="#00ff00"><b>struct</b></font> select_odd;
+
+      <font color="#00ff00"><b>template</b></font>&lt;<font color="#00ff00"><b>class</b></font> First, <font color="#00ff00"><b>class</b></font>... Remaining&gt;
+      <font color="#00ff00"><b>struct</b></font> select_even&lt; typelist&lt;First, Remaining...&gt; &gt;
+      {
+         <font color="#00ff00"><b>typedef</b></font> <font color="#00ff00"><b>typename</b></font> select_odd&lt; typelist&lt;Remaining...&gt; &gt;::type ::<font color="#00ff00"><b>template</b></font> push_front_t&lt;First&gt; type;
+      };
+
+      <font color="#00ff00"><b>template</b></font>&lt;&gt;
+      <font color="#00ff00"><b>struct</b></font> select_even&lt;typelist&lt;&gt;&gt;
+      {
+         <font color="#00ff00"><b>typedef</b></font> typelist&lt;&gt; type;
+      };
+
+      <font color="#00ff00"><b>template</b></font>&lt;<font color="#00ff00"><b>class</b></font> First, <font color="#00ff00"><b>class</b></font>... Remaining&gt;
+      <font color="#00ff00"><b>struct</b></font> select_odd&lt; typelist&lt;First, Remaining...&gt; &gt;
+      {
+         <font color="#00ff00"><b>typedef</b></font> <font color="#00ff00"><b>typename</b></font> select_even&lt; typelist&lt;Remaining...&gt; &gt;::type type;
+      };
+
+      <font color="#00ff00"><b>template</b></font>&lt;&gt;
+      <font color="#00ff00"><b>struct</b></font> select_odd&lt;typelist&lt;&gt;&gt;
+      {
+         <font color="#00ff00"><b>typedef</b></font> typelist&lt;&gt; type;
+      };
+
+      <font color="#8080ff"><b>/////////////////////////</b></font>
+
+      <font color="#00ff00"><b>template</b></font>&lt;<font color="#00ff00"><b>class</b></font> Tag, <font color="#00ff00"><b>class</b></font> TL&gt;
+      <font color="#00ff00"><b>struct</b></font> index_of;
+
+      <font color="#00ff00"><b>template</b></font>&lt;<font color="#00ff00"><b>class</b></font> Tag, <font color="#00ff00"><b>class</b></font> T, <font color="#00ff00"><b>class</b></font>... Args&gt;
+      <font color="#00ff00"><b>struct</b></font> index_of&lt;Tag, typelist&lt;T, Args...&gt;&gt;
+      {
+         <font color="#00ff00"><b>static</b></font> <font color="#00ff00"><b>const</b></font> <font color="#00ff00"><b>int</b></font> value = std::is_same&lt;Tag, T&gt;::value ? <font color="#ff40ff"><b>0</b></font> : <font color="#ff40ff"><b>1</b></font> + index_of&lt;Tag, typelist&lt;Args...&gt; &gt;::value;
+      };
+
+      <font color="#00ff00"><b>template</b></font>&lt;<font color="#00ff00"><b>class</b></font> Tag&gt;
+      <font color="#00ff00"><b>struct</b></font> index_of&lt;Tag, typelist&lt;&gt;&gt;
+      {
+         <font color="#00ff00"><b>static</b></font> <font color="#00ff00"><b>const</b></font> <font color="#00ff00"><b>int</b></font> value = <font color="#ff40ff"><b>0</b></font>;
+      };
+
+      <font color="#8080ff"><b>/////////////////////////</b></font>
+
+      <font color="#00ff00"><b>template</b></font>&lt;<font color="#00ff00"><b>class</b></font>... Args&gt;
+      <font color="#ffff00"><b>using</b></font> to_types_t = <font color="#00ff00"><b>typename</b></font> select_odd&lt; typelist&lt;Args...&gt; &gt;::type;
+
+      <font color="#00ff00"><b>template</b></font>&lt;<font color="#00ff00"><b>class</b></font>... Args&gt;
+      <font color="#ffff00"><b>using</b></font> to_tags_t = <font color="#00ff00"><b>typename</b></font> select_even&lt; typelist&lt;Args...&gt; &gt;::type;
+
+      <font color="#00ff00"><b>template</b></font>&lt;<font color="#00ff00"><b>class</b></font>... Args&gt;
+      <font color="#ffff00"><b>using</b></font> to_tuple_t = <font color="#00ff00"><b>typename</b></font> to_types_t&lt;Args...&gt;::tuple_t;
+   }
+
+   <font color="#00ff00"><b>inline</b></font> <font color="#00ff00"><b>namespace</b></font>
+   {
+      <font color="#ffff00"><b>using</b></font> <font color="#00ff00"><b>namespace</b></font> tagged_tuple_impl;
+
+      <font color="#00ff00"><b>template</b></font>&lt;<font color="#00ff00"><b>class</b></font>... Args&gt;
+      <font color="#00ff00"><b>struct</b></font> tagged_tuple : <font color="#ffff00"><b>public</b></font> to_tuple_t&lt;Args...&gt;
+      {
+         <font color="#ffff00"><b>using</b></font> <font color="#00ff00"><b>typename</b></font> to_tuple_t&lt;Args...&gt;::tuple;
+
+         <font color="#00ff00"><b>template</b></font>&lt;<font color="#00ff00"><b>class</b></font> Tag&gt;
+         <font color="#00ff00"><b>auto</b></font> get() -&gt; <font color="#ffff00"><b>decltype</b></font>(std::get&lt; index_of&lt;Tag, to_tags_t&lt;Args...&gt; &gt;::value &gt;(*<font color="#ffff00"><b>this</b></font>))
+         {
+            <font color="#ffff00"><b>return</b></font> std::get&lt; index_of&lt;Tag, to_tags_t&lt;Args...&gt; &gt;::value &gt;(*<font color="#ffff00"><b>this</b></font>);
+         }
+
+         <font color="#00ff00"><b>template</b></font>&lt;<font color="#00ff00"><b>int</b></font> Tag&gt;
+         <font color="#00ff00"><b>auto</b></font> get() -&gt; <font color="#ffff00"><b>decltype</b></font>(std::get&lt; Tag &gt;(*<font color="#ffff00"><b>this</b></font>))
+         {
+            <font color="#ffff00"><b>return</b></font> std::get&lt; Tag &gt;(*<font color="#ffff00"><b>this</b></font>);
+         }
+      };
+   }
+}
+
+<font color="#8080ff"><b>#endif</b></font>
+</pre>
+</body>
+</html>

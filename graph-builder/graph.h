@@ -30,9 +30,11 @@ private:
       {
          m_vertex_list.emplace_back(vert);
          m_adjacency_list.emplace_back(edge_list_t{});
+
+         return m_vertex_list.size() - 1;
       }
 
-      return std::distance(m_vertex_list.begin(), m_vertex_list.end());
+      return x - m_vertex_list.begin();
    }
 
    template<class visitor_t, class visitor1_t>
